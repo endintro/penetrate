@@ -18,6 +18,6 @@
   "homepage": "https://github.com/endintro/penetrate#readme",
   "dependencies": {
     "net-ping": "^1.2.3",
-    "pcap-ng-parser": "^1.0.0"
+    "tail": "^2.0.3"
   }
 }
