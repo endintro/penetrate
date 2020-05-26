@@ -1,0 +1,19 @@
+{
+  "name": "penetrate",
+  "version": "1.0.0",
+  "description": "intranet penetration in a special network environment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endintro/penetrate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/endintro/penetrate/issues"
+  },
+  "homepage": "https://github.com/endintro/penetrate#readme"
+}
