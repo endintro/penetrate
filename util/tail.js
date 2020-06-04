@@ -1,6 +1,6 @@
 Tail = require('tail').Tail;
 
-tail = new Tail("./data/tcpdump.log");
+tail = new Tail("../data/tcpdump.log");
 
 tail.on("line", function (data) {
     console.log(data);

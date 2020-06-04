@@ -1,5 +1,5 @@
 const ping = require("net-ping");
-const { config } = require("./config/default");
+const { config } = require("../config/default");
 
 // Default options
 const options = {
