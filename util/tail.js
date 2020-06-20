@@ -5,6 +5,13 @@ tail = new Tail("../data/tcpdump.log");
 tail.on("line", function (data) {
     //head = data.split("ICMP echo request, id ")[1].split(", seq")[0];
     console.log(data);
+    /*
+    if (data.split("ICMP echo request, id ")[1]) {
+        latesttime = new Date().getTime();
+        const head = data.split("ICMP echo request, id ")[1].split(", seq")[0];
+        done.add(head);
+    }
+    */
 });
 
 tail.on("error", function (error) {

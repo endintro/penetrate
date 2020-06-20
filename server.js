@@ -1,52 +1,54 @@
-const fs = require('fs');
-const dgram = require('dgram');
+const dgram = require("dgram");
 const { config } = require("./config/default");
-const { sendIcmp } = require("./util/icmp");
+const Timeout = require("await-timeout");
 
+const server = dgram.createSocket("udp4");
 
-const server = dgram.createSocket('udp4');
-const writer = fs.createWriteStream(config.filepath);
+main();
 
+async function main() {
+    let lastSize = -1;
+    let lastTime = new Date().getTime();
 
-server.on('listening', function () {
-    const address = server.address();
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
+    let done = new Set();
+    let datamap = new Map();
+    let max = 0;
+    let fileChunks = [];
 
-let count = 0;
-let done = new Set();
-let datamap = new Map();
+    server.on("listening", function () {
+        const address = server.address();
+        console.log(
+            "UDP Server listening on " + address.address + ":" + address.port
+        );
+    });
 
-server.on('message', function (chunk, remote) {
+    server.on("message", function (chunk, remote) {
+        const head = parseInt(chunk.slice(0, 10).toString());
+        const body = chunk.slice(10);
+        fileChunks[head] = body;
+        max = head > max ? head : max;
 
-    const head = parseInt(chunk.slice(0, 10).toString());
-    const body = chunk.slice(10);
+        if (!done.has(head)) {
+            datamap.set(head, body);
+        }
 
-    if (!done.has(head)) {
-        //writer.write(body, () => { });
-        datamap.set(head, body);
-        //console.log(`datamap length:${datamap.size}`);
+        done.add(head);
+    });
+
+    server.bind(config.port, config.host);
+
+    //lastSize != datamap.size
+    while (1) {
+        const now = new Date().getTime();
+        if (now - lastTime > 10 * 1000) {
+            lastSize = datamap.size;
+            lastTime = now;
+        }
+
+        console.log(`chunks received:${datamap.size}`);
+        //console.log(`max:${max}`);
+        await Timeout.set(config.sendInterval);
     }
 
-    done.add(head);
-    //console.log(`receive datagram:${head}`);
-
-    sendIcmp(head, function (error, target, sent, rcvd) {
-        const ms = rcvd - sent;
-        if (error) {
-            console.log(target + ": " + error.toString());
-        }
-        else {
-            //console.log(target + ": Alive (ms=" + ms + ")");
-            //console.log(`send icmp:${head}`);
-        }
-
-    });
-});
-
-setInterval(() => {
-    console.log(datamap.size);
-}, 5000);
-
-
-server.bind(config.port, config.host);
+    console.log("end");
+}
