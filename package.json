@@ -18,7 +18,6 @@
   "homepage": "https://github.com/endintro/penetrate#readme",
   "dependencies": {
     "await-timeout": "^1.1.1",
-    "lei-stream": "^1.4.2",
     "net-ping": "^1.2.3",
     "tail": "^2.0.3"
   }
