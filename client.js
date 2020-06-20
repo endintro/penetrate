@@ -1,12 +1,15 @@
 const { config } = require("./config/default");
-const { readFile } = require("./util/fileReader");
-const { sendUdpByInterval } = require("./util/udp");
-const { listenIcmp } = require("./util/tail");
+const file = require("./util/fileReader");
+const udp = require("./util/udp");
+const icmpdump = require("./util/icmpdump");
 
 main();
 
 async function main() {
-    listenIcmp();
-    const fileChunks = await readFile(config);
-    await sendUdpByInterval(fileChunks);
+    const fileChunks = await file.readFile(config);
+    await udp.sendUdpByInterval(fileChunks);
+
+    const idump = new icmpdump();
+    const lost = await idump.monitor();
+    console.log(lost);
 }

@@ -1,13 +1,13 @@
-const { listenUdp } = require("./util/udp");
 const Task = require("./util/task");
-const { feedbackPing } = require("./util/icmp");
+const udp = require("./util/udp");
+const icmp = require("./util/icmp");
 
 main();
 
 async function main() {
     const task = new Task();
-    listenUdp(task);
+    udp.listenUdp(task);
     await task.monitor();
     const lost = task.checkLost();
-    await feedbackPing(lost);
+    await icmp.feedbackPing(lost);
 }
